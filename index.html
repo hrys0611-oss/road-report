@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>路上故障報告</title>
+<style>
+  body {
+    font-family: sans-serif;
+    background: #f5f7fa;
+    margin: 0;
+    padding: 20px;
+  }
+  h1 {
+    text-align: center;
+  }
+  .container {
+    max-width: 600px;
+    margin: auto;
+  }
+  .card {
+    background: white;
+    padding: 15px;
+    margin-top: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  }
+  .title {
+    border-left: 5px solid #3b82f6;
+    padding-left: 10px;
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+  input, textarea {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 8px;
+  }
+  button {
+    width: 100%;
+    padding: 10px;
+    background: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 5px;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>路上故障報告</h1>
+
+<div class="container">
+
+  <!-- 入力 -->
+  <div class="card">
+    <div class="title">入力</div>
+    <input id="place" placeholder="発生場所">
+    <input id="time" placeholder="時間">
+    <textarea id="symptom" placeholder="症状"></textarea>
+    <textarea id="action" placeholder="対応"></textarea>
+    <textarea id="cause" placeholder="原因"></textarea>
+    <button onclick="createReport()">表示する</button>
+  </div>
+
+  <!-- 表示 -->
+  <div id="output" style="display:none;">
+
+    <div class="card">
+      <div class="title">発生</div>
+      <p>場所：<span id="out_place"></span></p>
+      <p>時間：<span id="out_time"></span></p>
+    </div>
+
+    <div class="card">
+      <div class="title">症状</div>
+      <p id="out_symptom"></p>
+    </div>
+
+    <div class="card">
+      <div class="title">対応</div>
+      <p id="out_action"></p>
+    </div>
+
+    <div class="card">
+      <div class="title">原因</div>
+      <p id="out_cause"></p>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+function createReport() {
+  document.getElementById("out_place").innerText = document.getElementById("place").value;
+  document.getElementById("out_time").innerText = document.getElementById("time").value;
+  document.getElementById("out_symptom").innerText = document.getElementById("symptom").value;
+  document.getElementById("out_action").innerText = document.getElementById("action").value;
+  document.getElementById("out_cause").innerText = document.getElementById("cause").value;
+
+  document.getElementById("output").style.display = "block";
+}
+</script>
+
+</body>
+</html>
