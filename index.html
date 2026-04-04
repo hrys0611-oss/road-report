@@ -2,22 +2,128 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>テスト</title>
+<title>故障報告一覧</title>
+
+<style>
+body {
+  font-family: sans-serif;
+  margin: 10px;
+}
+
+h2 {
+  font-size: 18px;
+}
+
+/* 検索ボックス */
+input {
+  margin-bottom: 10px;
+  padding: 5px;
+  width: 100%;
+  font-size: 14px;
+}
+
+/* 横スクロール */
+.table-container {
+  overflow-x: auto;
+  border: 1px solid #ccc;
+}
+
+/* 表 */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 12px;
+}
+
+/* ヘッダー */
+th {
+  background-color: #333;
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+/* セル */
+td, th {
+  border: 1px solid #ccc;
+  padding: 6px;
+  white-space: nowrap;
+}
+
+/* 行カラー */
+tr:nth-child(even) {
+  background-color: #f5f5f5;
+}
+
+/* ホバー */
+tr:hover {
+  background-color: #ddd;
+}
+</style>
+
 </head>
 <body>
 
-<h2>テスト表示</h2>
-<div id="test">読み込み中...</div>
+<h2>故障報告一覧</h2>
+
+<input type="text" id="search" placeholder="検索（車名・登録番号など）">
+
+<div class="table-container">
+  <table id="table"></table>
+</div>
 
 <script>
+let allRows = [];
+
 fetch("data.csv")
-  .then(res => res.text())
-  .then(text => {
-    document.getElementById("test").innerText = text;
-  })
-  .catch(err => {
-    document.getElementById("test").innerText = "エラー：" + err;
+  .then(res => res.arrayBuffer())
+  .then(buffer => {
+    const text = new TextDecoder("utf-8").decode(buffer);
+    const rows = text.split(/\r?\n/).filter(r => r);
+
+    // 1行目はヘッダー
+    const header = rows[0];
+    const data = rows.slice(1).reverse(); // 最新順
+
+    allRows = [header, ...data];
+    renderTable(allRows);
   });
+
+function renderTable(rows) {
+  let html = "";
+
+  rows.forEach((row, index) => {
+    const cols = row.split(",");
+    html += "<tr>";
+
+    cols.forEach(col => {
+      col = col.replace(/^"|"$/g, "");
+
+      if(index === 0){
+        html += "<th>" + col + "</th>";
+      } else {
+        html += "<td>" + col + "</td>";
+      }
+    });
+
+    html += "</tr>";
+  });
+
+  document.getElementById("table").innerHTML = html;
+}
+
+// 🔍 検索機能
+document.getElementById("search").addEventListener("keyup", function() {
+  const keyword = this.value.toLowerCase();
+
+  const filtered = allRows.filter((row, index) => {
+    if(index === 0) return true; // ヘッダーは残す
+    return row.toLowerCase().includes(keyword);
+  });
+
+  renderTable(filtered);
+});
 </script>
 
 </body>
