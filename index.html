@@ -14,10 +14,10 @@ h2 {
   font-size: 18px;
 }
 
-/* 検索ボックス */
+/* 検索 */
 input {
   margin-bottom: 10px;
-  padding: 5px;
+  padding: 6px;
   width: 100%;
   font-size: 14px;
 }
@@ -35,7 +35,7 @@ table {
   font-size: 12px;
 }
 
-/* ヘッダー */
+/* ヘッダー固定 */
 th {
   background-color: #333;
   color: white;
@@ -76,25 +76,34 @@ tr:hover {
 <script>
 let allRows = [];
 
+// CSV読み込み
 fetch("data.csv")
   .then(res => res.arrayBuffer())
   .then(buffer => {
     const text = new TextDecoder("utf-8").decode(buffer);
+
     const rows = text.split(/\r?\n/).filter(r => r);
 
-    // 1行目はヘッダー
+    // ヘッダー
     const header = rows[0];
-    const data = rows.slice(1).reverse(); // 最新順
+
+    // データ（最新順に）
+    const data = rows.slice(1).reverse();
 
     allRows = [header, ...data];
+
     renderTable(allRows);
   });
 
+// 表描画
 function renderTable(rows) {
   let html = "";
 
   rows.forEach((row, index) => {
-    const cols = row.split(",");
+
+    // カンマ・セミコロン・タブ全部対応
+    const cols = row.split(/,|;|\t/);
+
     html += "<tr>";
 
     cols.forEach(col => {
@@ -113,12 +122,12 @@ function renderTable(rows) {
   document.getElementById("table").innerHTML = html;
 }
 
-// 🔍 検索機能
+// 検索
 document.getElementById("search").addEventListener("keyup", function() {
   const keyword = this.value.toLowerCase();
 
   const filtered = allRows.filter((row, index) => {
-    if(index === 0) return true; // ヘッダーは残す
+    if(index === 0) return true;
     return row.toLowerCase().includes(keyword);
   });
 
