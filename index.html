@@ -2,98 +2,21 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>故障報告一覧</title>
-
-<style>
-body {
-  font-family: sans-serif;
-  margin: 10px;
-}
-
-/* タイトル */
-h2 {
-  font-size: 18px;
-  margin-bottom: 10px;
-}
-
-/* 横スクロール */
-.table-container {
-  overflow-x: auto;
-  border: 1px solid #ccc;
-}
-
-/* 表 */
-table {
-  border-collapse: collapse;
-  width: 100%;
-  font-size: 12px;
-}
-
-/* ヘッダー */
-th {
-  background-color: #333;
-  color: white;
-  position: sticky;
-  top: 0;
-  z-index: 1;
-}
-
-/* セル */
-td, th {
-  border: 1px solid #ccc;
-  padding: 6px;
-  white-space: nowrap;
-}
-
-/* 行の色 */
-tr:nth-child(even) {
-  background-color: #f5f5f5;
-}
-
-/* ホバー */
-tr:hover {
-  background-color: #ddd;
-}
-</style>
-
+<title>テスト</title>
 </head>
 <body>
 
-<h2>故障報告一覧</h2>
-
-<div class="table-container">
-  <table id="table"></table>
-</div>
+<h2>テスト表示</h2>
+<div id="test">読み込み中...</div>
 
 <script>
 fetch("data.csv")
-  .then(res => res.arrayBuffer())
-  .then(buffer => {
-    const text = new TextDecoder("utf-8").decode(buffer);
-
-    const rows = text.split(/\r?\n/);
-    let html = "";
-
-    rows.forEach((row, index) => {
-      if (!row) return;
-
-      const cols = row.split(",");
-      html += "<tr>";
-
-      cols.forEach(col => {
-        col = col.replace(/^"|"$/g, "");
-
-        if(index === 0){
-          html += "<th>" + col + "</th>";
-        } else {
-          html += "<td>" + col + "</td>";
-        }
-      });
-
-      html += "</tr>";
-    });
-
-    document.getElementById("table").innerHTML = html;
+  .then(res => res.text())
+  .then(text => {
+    document.getElementById("test").innerText = text;
+  })
+  .catch(err => {
+    document.getElementById("test").innerText = "エラー：" + err;
   });
 </script>
 
