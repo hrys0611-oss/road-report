@@ -14,7 +14,6 @@ h2 {
   font-size: 18px;
 }
 
-/* 検索 */
 input {
   margin-bottom: 10px;
   padding: 6px;
@@ -22,43 +21,32 @@ input {
   font-size: 14px;
 }
 
-/* 横スクロール */
 .table-container {
   overflow-x: auto;
   border: 1px solid #ccc;
 }
 
-/* 表 */
 table {
   border-collapse: collapse;
   width: 100%;
-  font-size: 12px;
+  font-size: 14px;
 }
 
-/* ヘッダー固定 */
 th {
   background-color: #333;
   color: white;
   position: sticky;
   top: 0;
-  z-index: 1;
 }
 
-/* セル */
 td, th {
   border: 1px solid #ccc;
-  padding: 6px;
+  padding: 8px;
   white-space: nowrap;
 }
 
-/* 行カラー */
 tr:nth-child(even) {
   background-color: #f5f5f5;
-}
-
-/* ホバー */
-tr:hover {
-  background-color: #ddd;
 }
 </style>
 
@@ -67,7 +55,7 @@ tr:hover {
 
 <h2>故障報告一覧</h2>
 
-<input type="text" id="search" placeholder="検索（車名・登録番号など）">
+<input type="text" id="search" placeholder="検索（車名・車番など）">
 
 <div class="table-container">
   <table id="table"></table>
@@ -76,18 +64,16 @@ tr:hover {
 <script>
 let allRows = [];
 
-// CSV読み込み
+// 表示する列（ここがポイント）
+const showColumns = [6, 7, 9, 13];
+
 fetch("data.csv")
   .then(res => res.arrayBuffer())
   .then(buffer => {
     const text = new TextDecoder("utf-8").decode(buffer);
-
     const rows = text.split(/\r?\n/).filter(r => r);
 
-    // ヘッダー
     const header = rows[0];
-
-    // データ（最新順に）
     const data = rows.slice(1).reverse();
 
     allRows = [header, ...data];
@@ -95,18 +81,16 @@ fetch("data.csv")
     renderTable(allRows);
   });
 
-// 表描画
 function renderTable(rows) {
   let html = "";
 
   rows.forEach((row, index) => {
-
-    // カンマ・セミコロン・タブ全部対応
     const cols = row.split(/,|;|\t/);
 
     html += "<tr>";
 
-    cols.forEach(col => {
+    showColumns.forEach(i => {
+      let col = cols[i] || "";
       col = col.replace(/^"|"$/g, "");
 
       if(index === 0){
